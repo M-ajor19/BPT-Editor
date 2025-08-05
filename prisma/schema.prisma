@@ -5,12 +5,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
-// enough when changing adapters.
-// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
-  provider = "sqlite"
-  url      = "file:dev.sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Session {
@@ -29,4 +26,63 @@ model Session {
   locale        String?
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
+}
+
+// Bulk Tag Operation Jobs
+model BulkTagJob {
+  id          String   @id @default(cuid())
+  shop        String
+  status      JobStatus @default(PENDING)
+  operation   TagOperation
+  totalCount  Int
+  processedCount Int @default(0)
+  successCount   Int @default(0)
+  failedCount    Int @default(0)
+  tagValue    String
+  oldTagValue String?
+  productIds  String[] // Array of product IDs
+  errorLog    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+  
+  @@index([shop, status])
+  @@index([createdAt])
+}
+
+// User Preferences for the app
+model UserPreferences {
+  id              String @id @default(cuid())
+  shop            String @unique
+  defaultBatchSize Int   @default(10)
+  emailNotifications Boolean @default(true)
+  savedFilters    Json? // Store commonly used filter combinations
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Tag Usage Analytics
+model TagUsage {
+  id        String   @id @default(cuid())
+  shop      String
+  tagName   String
+  usageCount Int     @default(1)
+  lastUsed  DateTime @default(now())
+  
+  @@unique([shop, tagName])
+  @@index([shop, usageCount])
+}
+
+enum JobStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum TagOperation {
+  ADD_TAG
+  REMOVE_TAG
+  REPLACE_TAG
 }
