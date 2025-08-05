@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -28,47 +25,44 @@ model Session {
   emailVerified Boolean?  @default(false)
 }
 
-// Bulk Tag Operation Jobs
 model BulkTagJob {
-  id          String   @id @default(cuid())
-  shop        String
-  status      JobStatus @default(PENDING)
-  operation   TagOperation
-  totalCount  Int
-  processedCount Int @default(0)
-  successCount   Int @default(0)
-  failedCount    Int @default(0)
-  tagValue    String
-  oldTagValue String?
-  productIds  String[] // Array of product IDs
-  errorLog    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  completedAt DateTime?
-  
+  id             String       @id @default(cuid())
+  shop           String
+  status         JobStatus    @default(PENDING)
+  operation      TagOperation
+  totalCount     Int
+  processedCount Int          @default(0)
+  successCount   Int          @default(0)
+  failedCount    Int          @default(0)
+  tagValue       String
+  oldTagValue    String?
+  productIds     String[]
+  errorLog       String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  completedAt    DateTime?
+
   @@index([shop, status])
   @@index([createdAt])
 }
 
-// User Preferences for the app
 model UserPreferences {
-  id              String @id @default(cuid())
-  shop            String @unique
-  defaultBatchSize Int   @default(10)
-  emailNotifications Boolean @default(true)
-  savedFilters    Json? // Store commonly used filter combinations
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  shop               String   @unique
+  defaultBatchSize   Int      @default(10)
+  emailNotifications Boolean  @default(true)
+  savedFilters       Json?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
-// Tag Usage Analytics
 model TagUsage {
-  id        String   @id @default(cuid())
-  shop      String
-  tagName   String
-  usageCount Int     @default(1)
-  lastUsed  DateTime @default(now())
-  
+  id         String   @id @default(cuid())
+  shop       String
+  tagName    String
+  usageCount Int      @default(1)
+  lastUsed   DateTime @default(now())
+
   @@unique([shop, tagName])
   @@index([shop, usageCount])
 }
