@@ -14,6 +14,16 @@ export default async function handleRequest(
   remixContext,
 ) {
   addDocumentResponseHeaders(request, responseHeaders);
+  
+  // Add Core Web Vitals optimization headers
+  responseHeaders.set("X-Content-Type-Options", "nosniff");
+  responseHeaders.set("X-Frame-Options", "ALLOWALL"); // Required for Shopify embedding
+  responseHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  
+  // Performance optimization headers
+  responseHeaders.set("Cache-Control", "public, max-age=300, s-maxage=3600");
+  responseHeaders.set("Vary", "Accept-Encoding");
+  
   const userAgent = request.headers.get("user-agent");
   const callbackName = isbot(userAgent ?? "") ? "onAllReady" : "onShellReady";
 

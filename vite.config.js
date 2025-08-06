@@ -66,8 +66,31 @@ export default defineConfig({
   ],
   build: {
     assetsInlineLimit: 0,
+    // Core Web Vitals optimizations
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          polaris: ['@shopify/polaris'],
+          appbridge: ['@shopify/app-bridge-react']
+        }
+      }
+    },
+    // Performance optimizations
+    cssCodeSplit: true,
+    sourcemap: false, // Disable in production for better performance
+    minify: 'esbuild',
+    target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari13']
   },
   optimizeDeps: {
-    include: ["@shopify/app-bridge-react", "@shopify/polaris"],
+    include: ["@shopify/app-bridge-react", "@shopify/polaris", "@prisma/client"],
+    exclude: ["@prisma/client/edge"]
   },
+  // Performance monitoring and metrics
+  define: {
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+  },
+  // CSS optimization
+  css: {
+    devSourcemap: false,
+  }
 });
