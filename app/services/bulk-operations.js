@@ -1,7 +1,5 @@
 // Bulk operations service for handling large tag updates with PostgreSQL integration
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma.js';
 
 export class BulkOperationsService {
   constructor(admin, shop = null) {

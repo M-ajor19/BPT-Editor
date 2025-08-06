@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import 'dotenv/config';
+import { prisma } from '../app/lib/prisma.js';
 
 async function runQueries() {
   console.log('🔍 Running sample queries for Bulk Product Tag Editor...\n');
